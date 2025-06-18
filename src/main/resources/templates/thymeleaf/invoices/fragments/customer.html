@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Customer</title>
+</head>
+<body>
+
+    <th:block th:fragment="customer" th:object="${customer}">
+        <span>Nabywca:</span>
+        <span>nazwa: <span th:text="*{name}">Drogi kliencie</span></span>
+        <span>ulica: <span th:text="*{address.street address.house}"> </span></span>
+        <span>poczta: <span th:text="*{address.city, address.postCode}"></span></span>
+        <span>kraj: [[*{address.country}]]</span>
+        <span>nip: [[*{nip}]]</span>
+    </th:block>
+
+    <th:block th:fragment="customerTable" th:object="${customer}">
+        <table class="seller">
+            <thead>
+            <tr>
+                <th colspan="2" style="text-align: center;">Kupujacy: </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="tableTextLeft">
+                    nazwa:
+                </td>
+                <td class="tableTextRight" th:text="*{name}">
+                    Blad!
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    ulica:
+                </td>
+                <td class="tableTextRight" >
+                    <span> [[*{address.street}]] [[*{address.house}]]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    poczta:
+                </td>
+                <td class="tableTextRight">
+                    [[*{address.city}]] [[*{address.postCode}]]
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    kraj:
+                </td>
+                <td class="tableTextRight" th:text="*{address.country}">
+                    Blad!
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    nip:
+                </td>
+                <td class="tableTextRight" th:text="*{nip}">
+                    Blad!
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+
+    <th:block th:fragment="customerTableNoVat" th:object="${customer}">
+        <table class="seller">
+            <thead>
+            <tr>
+                <th colspan="2" style="text-align: center;">Kupujacy: </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="tableTextLeft">
+                    nazwa:
+                </td>
+                <td class="tableTextRight" th:text="*{name}">
+                    Blad!
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    ulica:
+                </td>
+                <td class="tableTextRight" >
+                    <span> [[*{address.street}]] [[*{address.house}]]</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    poczta:
+                </td>
+                <td class="tableTextRight">
+                    [[*{address.city}]] [[*{address.postCode}]]
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+                    kraj:
+                </td>
+                <td class="tableTextRight" th:text="*{address.country}">
+                    Blad!
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTextLeft">
+
+                </td>
+                <td class="tableTextRight">
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+
+</body>
+</html>

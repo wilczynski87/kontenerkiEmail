@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Invoice Periodic</title>
+    </head>
+    <body>
+        <H1>Witam <span th:text="${salutation}"></span></H1>
+        <p>W załączniku przesyłam <span th:text="${document}">fakturkę</span> za <span th:text="${month}"></span></p>
+        <br>
+        <p>Dziękuje za pozostawanie moim klientem</p>
+        <p>Karol Wilczyński</p>
+        <p>tel. 507 036 484</p>
+    </body>
+</html>

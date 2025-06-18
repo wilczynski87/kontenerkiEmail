@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seller</title>
+</head>
+<body>
+
+    <th:block th:fragment="seller" th:object="${seller}">
+        <span>Sprzedawca:</span>
+        <span>nazwa: [[*{name}]]</span>
+        <span th:unless="*{address}">Ostrowskiego 102</span>
+        <span th:if="*{address}">ulica:[[*{address.street}]] [[*{address.house}]] </span>
+        <span th:unless="*{address}">Wroclaw, 53-238</span>
+        <span th:if="*{address}">poczta: [[*{address.city}]] [[*{address.postCode}]]</span>
+        <span>kraj: [[*{address?.country}]]</span>
+        <span>nip: [[*{nip}]]</span>
+    </th:block>
+
+    <th:block th:fragment="sellerTable" th:object="${seller}">
+        <table class="seller">
+            <thead>
+                <tr>
+                    <th colspan="2" style="text-align: center;">Sprzedawca: </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tableTextLeft">
+                        nazwa:
+                    </td>
+                    <td class="tableTextRight" th:text="*{name}">
+                        Blad!
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableTextLeft">
+                        ulica:
+                    </td>
+                    <td class="tableTextRight" >
+                        <span> [[*{address.street}]] [[*{address.house}]]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableTextLeft">
+                        poczta:
+                    </td>
+                    <td class="tableTextRight">
+                        [[*{address.city}]] [[*{address.postCode}]]
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableTextLeft">
+                        kraj:
+                    </td>
+                    <td class="tableTextRight" th:text="*{address.country}">
+                        Blad!
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tableTextLeft">
+                        nip:
+                    </td>
+                    <td class="tableTextRight" th:text="*{nip}">
+                        Blad!
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </th:block>
+
+</body>
+</html>

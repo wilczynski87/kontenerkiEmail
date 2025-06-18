@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Invoice table</title>
+</head>
+<body>
+    <th:block th:fragment="productsTable" th:object="${invoice}">
+        <table>
+            <thead>
+                <tr class="tableHead">
+                    <th>
+                        Lp.
+                    </th>
+                    <th>
+                        Nazwa:
+                    </th>
+                    <th>
+                        Cena netto:
+                    </th>
+                    <th>
+                        Ilość:
+                    </th>
+                    <th>
+                        Stawka Vat:
+                    </th>
+                    <th>
+                        Suma VAT:
+                    </th>
+                    <th>
+                        Suma netto:
+                    </th>
+                    <th>
+                        Suma brutto:
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="8">
+                    <hr />
+                </td></tr>
+                <tr class="smallerFont" th:each="product, iStat : ${invoice.products}">
+                    <td>
+                        [[${iStat.count}]]
+                    </td>
+                    <td>
+                        [[${product.productName}]]
+                    </td>
+                    <td>
+                        [[${product.unitPrice}]]
+                    </td>
+                    <td>
+                        [[${product.quantity}]]
+                    </td>
+                    <td>
+                        [[${product.vatRate}]]
+                    </td>
+                    <td>
+                        [[${product.vatAmount}]]
+                    </td>
+                    <td>
+                        [[${product.price}]]
+                    </td>
+                    <td>
+                        [[${product.priceWithVat}]]
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5"></td>
+                    <td colspan="3"> <hr /> </td>
+                </tr>
+                <tr>
+                    <td colspan="5"></td>
+                    <td class="">
+                        [[*{vatAmountSum}]]
+                    </td>
+                    <td class="">
+                        [[*{priceSum}]]
+                    </td>
+                    <td class="biggerFont">
+                        <b th:text="*{priceWithVatSum}">Error</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </th:block>
+
+    <th:block th:fragment="productsTableNoVat" th:object="${invoice}">
+        <table style="width:100%">
+            <thead style="width:100%">
+            <tr class="tableHead">
+                <th>
+                    Lp.
+                </th>
+                <th>
+                    Nazwa:
+                </th>
+                <th>
+                    Cena:
+                </th>
+                <th>
+                    Ilość:
+                </th>
+                <th>
+                    Suma:
+                </th>
+            </tr>
+            </thead>
+            <tbody style="width:100%">
+            <tr><td colspan="5">
+                <hr />
+            </td></tr>
+            <tr class="smallerFont" th:each="product, iStat : ${invoice.products}">
+                <td>
+                    [[${iStat.count}]]
+                </td>
+                <td>
+                    [[${product.productName}]]
+                </td>
+                <td>
+                    [[${product.unitPrice}]]
+                </td>
+                <td>
+                    [[${product.quantity}]]
+                </td>
+                <td>
+                    [[${product.price}]]
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="1"> <hr /> </td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td class="biggerFont">
+                    <b th:text="*{priceSum}">Error</b>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </th:block>
+
+</body>
+</html>

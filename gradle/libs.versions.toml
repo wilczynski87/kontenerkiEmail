@@ -3,6 +3,9 @@
 kotlin-version = "2.1.10"
 ktor-version = "3.1.3"
 logback-version = "1.4.14"
+open-pdf-ver = "1.3.30"
+flying-saucer = "9.1.22"
+mail-ver = "2.0.1"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor-version" }
@@ -15,6 +18,14 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor-version" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
+openpdf = { module = "com.github.librepdf:openpdf", version.ref = "open-pdf-ver"}
+flying-saucer-pdf-openpdf = { module = "org.xhtmlrenderer:flying-saucer-pdf-openpdf", version.ref = "flying-saucer"}
+java-mail = { module = "com.sun.mail:jakarta.mail", version.ref = "mail-ver"}
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-version" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-version" }
+
+
+
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

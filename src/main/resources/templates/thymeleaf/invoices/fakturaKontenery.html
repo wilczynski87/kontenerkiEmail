@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Faktura Kontenery Magazynowe</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <style>
+            @charset "UTF-8";
+            body {
+                font-family: Voces;
+            }
+            h1 {
+                font-size: 80px;
+                text-align: center;
+            }
+            .border {
+                border-style: solid;
+                border-color: black;
+                border-width: 1px;
+            }
+            .sign {
+                font-family: "Alex Brush", 'Brush Script Std', cursive;
+                top: 50%;
+            }
+            .col {
+                height: 100%;
+                text-align: center;
+                margin: auto;
+                border-collapse: collapse;
+            }
+            .row {
+                margin: auto;
+                border-collapse: collapse;
+                clear: both;
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+            .col {
+                width: 49%;
+            }
+            .left {
+                float: left;
+            }
+            .right {
+                float: right;
+            }
+            .col * {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                align-content: center;
+            }
+            .row::after {
+                content: "";
+                clear: both;
+                display: block;
+            }
+            .container {
+                height: 100%;
+            }
+            .align-down {
+                top: 90%;
+            }
+
+            .biggerFont {
+                font-size: 21px;
+            }
+            .smallerFont {
+                font-size: 13px
+            }
+            .tableHead {
+                font-size: 90%;
+            }
+            .topBorder {
+                border-top: 1px solid black;
+            }
+            .footer {
+                background-color: #bdbdbd;
+                width: 100%;
+                text-align: center;
+            }
+            .tableTextLeft {
+                text-align: right;
+            }
+            .tableTextRight {
+                text-align: left;
+            }
+            .autoWidth {
+                width:auto;
+            }
+            .seller {
+                width: 100%;
+                margin: auto;
+            }
+
+            .vCenter {
+                top: 50%;
+                vertical-align: middle;
+            }
+
+            @page {
+            size: A4 portrait;
+            margin-top: 1.5cm;
+            margin-left: 2.4cm;
+            margin-right: 2.4cm;
+            margin-bottom: 1cm;
+            }
+
+            @media print {
+                #footer {
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                }
+
+                #header {
+                    position: fixed;
+                    top: 0;
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1><span th:text="*{invoice.invoiceTitle}">Faktura VAT</span></h1>
+            <div id="invoiceNumberPlace">
+                Faktura numer: <span id="invoiceNumber">[[${invoice.invoiceNumber}]]</span>
+            </div>
+            <div id="invoiceIssuePlace">
+                Data wystawienia: <span id="invoiceDate">[[${invoice.invoiceDate}]]</span>
+            </div>
+            <br /><br />
+
+            <table style="width:100%">
+                <tr style="width:100%">
+                    <td style="">
+                        <div th:insert="~{invoices/fragments/seller :: sellerTable(seller=${invoice.seller})}"></div>
+                    </td>
+                    <td style="width:20%"></td>
+                    <td style="">
+                        <div th:if="${invoice.vatApply}">
+                            <div th:insert="~{invoices/fragments/customer :: customerTable(customer=${invoice.customer})}"></div>
+                        </div>
+                        <div th:unless="${invoice.vatApply}">
+                            <div th:insert="~{invoices/fragments/customer :: customerTableNoVat(customer=${invoice.customer})}"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+            <br /><br />
+
+            <div th:if="${invoice.vatApply}" style="width:100%">
+                <div th:insert="~{invoices/fragments/invoiceTable :: productsTable(invoice=${invoice})}"></div>
+            </div>
+            <div th:unless="${invoice.vatApply}" style="width:100%">
+                <div th:insert="~{invoices/fragments/invoiceTable :: productsTableNoVat(invoice=${invoice})}"></div>
+            </div>
+
+            <br />
+
+        <div id="footer">
+            <div class="row align-down">
+                <div id="paymentDetails" class="col left">
+                    <div th:insert="~{invoices/fragments/paymentDetails :: paymentDetails(seller=${invoice.seller})}"></div>
+                </div>
+                <div id="sign" class="col right vCenter">
+                    <span class="sign">Karol Wilczyński</span>
+                </div>
+            </div>
+            <div id="bottom" class="footer vCenter">Dziękuje za korzystanie z placu!</div>
+        </div>
+    </body>
+</html>

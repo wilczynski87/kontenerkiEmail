@@ -12,6 +12,10 @@ application {
     mainClass = "io.ktor.server.netty.EngineMain"
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
 repositories {
     mavenCentral()
 }
@@ -27,4 +31,12 @@ dependencies {
     implementation(libs.ktor.server.config.yaml)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+    implementation(libs.openpdf)
+    implementation(libs.flying.saucer.pdf.openpdf)
+    implementation(libs.java.mail)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(files("libs/library-1.0.0.jar"))
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-datetime
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 }

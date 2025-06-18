@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Payment Details</title>
+</head>
+<body>
+    <th:block th:fragment="paymentDetails" th:object="${seller}">
+        <span>Numer konta: <span th:text="*{account}"></span></span>
+        <b>Proszę o płatność do dnia: <span th:text="${invoice.paymentDay}"></span></b>
+    </th:block>
+</body>
+</html>

@@ -1,17 +1,21 @@
 package com.kontenery
 
-import io.ktor.serialization.kotlinx.json.*
+import com.kontenery.controller.sendInvoice
+import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.service.createEmail
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.requestvalidation.RequestValidation
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.thymeleaf.Thymeleaf
-import io.ktor.server.thymeleaf.ThymeleafContent
-import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import jakarta.mail.Authenticator
+import jakarta.mail.PasswordAuthentication
+import jakarta.mail.Session
+import jakarta.mail.Transport
+import kotlinx.coroutines.channels.Channel
+import java.util.*
 
-fun Application.configureRouting() {
+fun Application.configureRouting(mailQueue: Channel<Invoice>) {
     install(RequestValidation) {
         validate<String> { bodyText ->
             if (!bodyText.startsWith("Hello"))
@@ -19,9 +23,46 @@ fun Application.configureRouting() {
             else ValidationResult.Valid
         }
     }
+
     routing {
-        get("/") {
-            call.respondText("Hello World!")
+        get("healthcheck") {
+            call.respond("ok")
         }
+        get("testMail") {
+            try {
+//                println("testMail")
+                val emailUser = "parkingostrowskiego@gmail.com"
+                val emailPassword = "ehpejfervmuwjwrg"
+                val props = Properties().apply {
+                    put("mail.smtp.auth", "true")
+                    put("mail.smtp.starttls.enable", "true")
+                    put("mail.smtp.host", "smtp.gmail.com")
+                    put("mail.smtp.port", "587")
+                }
+                val session: Session = Session.getInstance(props, object : Authenticator() {
+                    override fun getPasswordAuthentication(): PasswordAuthentication {
+                        return PasswordAuthentication(emailUser, emailPassword)
+                    }
+                })
+
+                val email = createEmail(
+                    session = session,
+                    from = emailUser,
+                    to = "wilczynski87@gmail.com",
+                    subject = "Faktura - magazynki przy Ostrowskiego",
+                    htmlContent = "",
+                    pdfAttachment = null,
+                )
+
+                Transport.send(email)
+                log.info("mail wysłany")
+
+            } catch (e:Exception) {
+                println("testMail Exception:" )
+                println(e)
+            }
+        }
+
+        sendInvoice(mailQueue)
     }
 }
