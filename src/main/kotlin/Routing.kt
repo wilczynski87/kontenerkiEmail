@@ -2,6 +2,7 @@ package com.kontenery
 
 import com.kontenery.controller.sendInvoice
 import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.service.GmailOAuth2Login
 import com.kontenery.service.createEmail
 import io.ktor.server.application.*
 import io.ktor.server.plugins.requestvalidation.RequestValidation
@@ -32,7 +33,7 @@ fun Application.configureRouting(mailQueue: Channel<Invoice>) {
             try {
 //                println("testMail")
                 val emailUser = "parkingostrowskiego@gmail.com"
-                val emailPassword = "ehpejfervmuwjwrg"
+                val emailPassword = "litcviutipqwkxsw"
                 val props = Properties().apply {
                     put("mail.smtp.auth", "true")
                     put("mail.smtp.starttls.enable", "true")
@@ -57,6 +58,16 @@ fun Application.configureRouting(mailQueue: Channel<Invoice>) {
                 Transport.send(email)
                 log.info("mail wysłany")
 
+            } catch (e:Exception) {
+                println("testMail Exception:" )
+                println(e)
+            }
+        }
+
+        get("loginTest") {
+            try {
+                val result = GmailOAuth2Login.authorize()
+                println(result.toString())
             } catch (e:Exception) {
                 println("testMail Exception:" )
                 println(e)

@@ -1,69 +1,35 @@
-#FROM ubuntu:latest
-#LABEL authors="wilcz"
-#
-#ENTRYPOINT ["top", "-b"]
+# === Build stage ===
+FROM gradle:8.5-jdk21 AS build
+WORKDIR /app
 
+# Copy only files needed to download dependencies first (for caching)
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY gradle ./gradle
 
+# Download dependencies
+RUN gradle build --no-daemon --stacktrace || true
 
-# Use OpenJDK 21 as the base image
-FROM openjdk:21-jdk-slim as build
+# Copy rest of the project and build it
+COPY . .
 
-# Set the working directory in the container
+# Build the project
+RUN gradle clean shadowJar --no-daemon
+
+# === Runtime stage ===
+FROM openjdk:21-jdk-slim
 WORKDIR /kontenerki
 
-# Copy the local application jar file to the container
-COPY build/libs/email-all.jar /kontenerki/email.jar
-#COPY build/libs/main-0.0.1.jar /kontenerki/api.jar
+# Copy the built JAR from the build stage
+COPY --from=build /app/build/libs/*.jar ./email.jar
 
-# Expose the port your Ktor app runs on
+# Expose the port the Ktor app runs on
 EXPOSE 200
 
+# Environment variables
 ENV API_NAME=api
 ENV API_PORT=100
 ENV EMAIL_PASSWORD=ehpejfervmuwjwrg
 ENV EMAIL_USER=parkingostrowskiego@gmail.com
 
-# Command to run the app
+# Run the app
 CMD ["java", "-jar", "email.jar"]
-
-
-
-## Use OpenJDK 21 as the base image
-#FROM openjdk:21-jdk-slim as builder
-#
-## Set the working directory
-#WORKDIR /app
-#
-## Copy Gradle files first to leverage Docker cache
-#COPY gradlew .
-#COPY gradle gradle
-#COPY build.gradle.kts .
-#COPY settings.gradle.kts .
-#COPY src src
-#
-## Build the application
-#RUN chmod +x gradlew && ./gradlew build --no-daemon
-#
-## Runtime stage
-#FROM openjdk:21-jdk-slim
-#
-#WORKDIR /app
-#
-## Copy the built application from builder stage
-#COPY --from=builder /app/build/libs/*-all.jar app.jar
-#
-## Expose the port (should match your application.yaml)
-#EXPOSE 100
-#
-## Environment variables (can be overridden at runtime)
-#ENV DB_URL=jdbc:postgresql://postgres_db1:5432/db1 \
-#    DB_USER=postgres \
-#    POSTGRES_PASSWORD=postgres \
-#    PORT=100
-#
-## Health check (optional)
-#HEALTHCHECK --interval=30s --timeout=3s \
-#  CMD curl -f http://localhost:100/health || exit 1
-#
-## Command to run the app
-#CMD ["java", "-jar", "app.jar"]

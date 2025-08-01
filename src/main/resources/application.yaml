@@ -5,6 +5,6 @@ ktor:
     deployment:
         port: 200
 
-email:
-    user: "parkingostrowskiego@gmail.com"
-    password: "ehpejfervmuwjwrg"
+#email:
+#    user: "parkingostrowskiego@gmail.com"
+#    password: "litcviutipqwkxsw"

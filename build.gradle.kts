@@ -39,4 +39,6 @@ dependencies {
     implementation(files("libs/library-1.0.0.jar"))
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-datetime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+    implementation(libs.google.api.services.gmail)
+    implementation(libs.google.oauth.client)
 }

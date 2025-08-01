@@ -16,7 +16,7 @@ fun Route.sendInvoice(mailQueue: Channel<Invoice>) {
             try {
                 // recive data to send invoice
                 val invoice:Invoice = call.receive<Invoice>()
-//                println("invoice: $invoice")
+                println("invoice: $invoice")
                 // send invoice to queue
                 mailQueue.send(invoice)
 //                println("invoice2: $invoice")
