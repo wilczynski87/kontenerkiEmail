@@ -32,8 +32,14 @@ fun mapInvoiceToVariablesMapForMailTemplate(invoice: Invoice): Map<String, Any> 
         Pair("month", Month.getMonth(invoice.invoiceDate ?: LocalDate.now())?.polishName ?: "bierzący miesiąc")
     )
 }
+fun mapVariablesForPrintInvoices(data: LocalDate): Map<String, Any> {
+    return mapOf(
+        Pair("month", Month.getMonth(data)?.polishName ?: "bierzący miesiąc")
+    )
+}
 fun mapInvoiceToVariablesMapForInvoiceTemplate(invoice: Invoice): Map<String, Any> {
-    return mapOf(Pair("invoice", invoice))
+    val isInvoice: Boolean = invoice.vatApply
+    return mapOf(Pair("invoice", invoice), Pair("isInvoice", isInvoice))
 }
 
 fun renderTemplateToHtml(templateEngine: TemplateEngine, variables: Map<String, Any>, template: String): String {

@@ -1,5 +1,6 @@
 package com.kontenery
 
+import com.kontenery.controller.printInvoice
 import com.kontenery.controller.sendInvoice
 import com.kontenery.library.model.invoice.Invoice
 import com.kontenery.service.GmailOAuth2Login
@@ -75,5 +76,7 @@ fun Application.configureRouting(mailQueue: Channel<Invoice>) {
         }
 
         sendInvoice(mailQueue)
+
+        printInvoice()
     }
 }

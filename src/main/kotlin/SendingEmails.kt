@@ -3,18 +3,19 @@ package com.kontenery
 import com.google.api.client.auth.oauth2.Credential
 import com.kontenery.library.model.invoice.Invoice
 import com.kontenery.library.utils.Path
+import com.kontenery.library.utils.Env
 import com.kontenery.service.*
 import io.ktor.server.application.*
 import jakarta.mail.Authenticator
 import jakarta.mail.PasswordAuthentication
 import jakarta.mail.Session
 import jakarta.mail.Transport
-import jdk.internal.joptsimple.internal.Messages.message
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import java.util.*
 
+val env: Env = Env.valueOf(System.getenv("ENV") ?: "DEV")
 
 fun Application.sendingMails(mailQueue: Channel<Invoice>) {
 
@@ -36,13 +37,15 @@ fun Application.sendingMails(mailQueue: Channel<Invoice>) {
             }
         })
 
-        for (invoice in mailQueue) {
+        for (invoice: Invoice in mailQueue) {
             try {
                 println("sending invoice: $invoice")
                 val mailTemplateProps: Map<String, Any> = mapInvoiceToVariablesMapForMailTemplate(invoice)
                 val invoiceTemplateProps: Map<String, Any> = mapInvoiceToVariablesMapForInvoiceTemplate(invoice)
 //                println("blad 1")
-                val mailClient: String = invoice.customer?.email ?: throw NullPointerException("No email customer, for: ${invoice.customer}")
+
+                val mailClient: String = if(env.name == "DEV") "wilczynski87@gmail.com"
+                    else invoice.customer?.email ?: throw NullPointerException("No email customer, for: ${invoice.customer}")
 
                 val mailContent:String = renderTemplateToHtml(templateEngine = TemplateEngine.engine, variables = mailTemplateProps, template = Path.PERIODIC_MAIL.path)
 //                println("blad 2")
@@ -102,7 +105,8 @@ fun Application.sendingMails2(mailQueue: Channel<Invoice>) {
                 val mailTemplateProps: Map<String, Any> = mapInvoiceToVariablesMapForMailTemplate(invoice)
                 val invoiceTemplateProps: Map<String, Any> = mapInvoiceToVariablesMapForInvoiceTemplate(invoice)
 //                println("blad 1")
-                val mailClient: String = invoice.customer?.email ?: throw NullPointerException("No email customer, for: ${invoice.customer}")
+                val mailClient: String = if(env.name == "DEV") "wilczynski87@gmail.com"
+                    else invoice.customer?.email ?: throw NullPointerException("No email customer, for: ${invoice.customer}")
 
                 val mailContent:String = renderTemplateToHtml(templateEngine = TemplateEngine.engine, variables = mailTemplateProps, template = Path.PERIODIC_MAIL.path)
 //                println("blad 2")
