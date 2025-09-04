@@ -127,14 +127,14 @@
     <body>
         <div class="header">
             <h1><span th:if="*{isInvoice}">Faktura VAT</span></h1>
-            <h1><span th:unless="*{isInvoice}">Faktura imienna bez VAT</span></h1>
+            <h1><span th:unless="*{isInvoice}" style="font-size: 50px">Faktura imienna bez VAT</span></h1>
             <div id="invoiceNumberPlace">
                 Faktura numer: <span id="invoiceNumber">[[${invoice.invoiceNumber}]]</span>
             </div>
             <div id="invoiceIssuePlace">
                 Data wystawienia: <span id="invoiceDate">[[${invoice.invoiceDate}]]</span>
             </div>
-            <br /><br />
+            <br />
             <table style="width:100%">
                 <tr style="width:100%">
                     <td style="">
@@ -154,7 +154,7 @@
         </div>
 
         <h4 th:if="*{invoice.invoiceTitle != null and !#strings.isEmpty(invoice.invoiceTitle)}"><span th:text="*{'tytułem: ' + invoice.invoiceTitle}"></span></h4>
-        <h4 th:if="*{invoice.invoiceTitle == null or #strings.isEmpty(invoice.invoiceTitle)}"><br /><br /></h4>
+        <h4 th:if="*{invoice.invoiceTitle == null or #strings.isEmpty(invoice.invoiceTitle)}"><br /></h4>
 
             <div th:if="${invoice.vatApply}" style="width:100%">
                 <div th:insert="~{invoices/fragments/invoiceTable :: productsTable(invoice=${invoice})}"></div>
