@@ -3,7 +3,7 @@ ktor:
         modules:
             - com.kontenery.ApplicationKt.module
     deployment:
-        port: 200
+        port: "$EMAIL_PORT:8200"
 
 #email:
 #    user: "parkingostrowskiego@gmail.com"
