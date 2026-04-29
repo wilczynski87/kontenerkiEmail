@@ -3,11 +3,16 @@ FROM gradle:8.5-jdk21 AS build
 WORKDIR /app
 
 # Copy only files needed to download dependencies first (for caching)
-COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY gradlew .
 COPY gradle ./gradle
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+
+# Nadaj uprawnienia
+RUN chmod +x gradlew
 
 # Download dependencies
-RUN gradle build --no-daemon --stacktrace || true
+RUN #gradle build --no-daemon --stacktrace || true
+RUN ./gradlew dependencies --no-daemon
 
 # Copy rest of the project and build it
 COPY . .
@@ -16,14 +21,14 @@ COPY . .
 RUN gradle clean shadowJar --no-daemon
 
 # === Runtime stage ===
-FROM openjdk:25-ea-21-jdk-slim
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /kontenerki
 
 # Copy the built JAR from the build stage
 COPY --from=build /app/build/libs/*.jar ./email.jar
 
 # Expose the port the Ktor app runs on
-EXPOSE 200
+EXPOSE 8200
 
 # Environment variables
 ENV API_NAME=api
