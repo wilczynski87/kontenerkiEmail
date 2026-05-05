@@ -4,6 +4,7 @@ import com.kontenery.library.model.invoice.Invoice
 import com.kontenery.library.utils.Path
 import com.kontenery.library.utils.now
 import com.kontenery.service.*
+import io.ktor.server.application.call
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import jakarta.mail.Authenticator

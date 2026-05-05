@@ -18,14 +18,19 @@ RUN ./gradlew dependencies --no-daemon
 COPY . .
 
 # Build the project
-RUN gradle clean shadowJar --no-daemon
+# RUN gradle clean shadowJar --no-daemon
+RUN bash gradlew clean installDist --no-daemon
 
 # === Runtime stage ===
 FROM eclipse-temurin:21-jre-jammy
-WORKDIR /kontenerki
+#WORKDIR /kontenerki
+WORKDIR /kontenerki/email
 
 # Copy the built JAR from the build stage
-COPY --from=build /app/build/libs/*.jar ./email.jar
+#COPY --from=build /app/build/libs/*.jar ./email.jar
+
+# kopiujemy gotową dystrybucję Ktor
+COPY --from=build /app/build/install/email/ ./
 
 # Expose the port the Ktor app runs on
 EXPOSE 8200
@@ -36,5 +41,7 @@ ENV API_PORT=100
 ENV EMAIL_PASSWORD=ehpejfervmuwjwrg
 ENV EMAIL_USER=parkingostrowskiego@gmail.com
 
-# Run the app
-CMD ["java", "-jar", "email.jar"]
+## Run the app
+#CMD ["java", "-jar", "email.jar"]
+# start aplikacji (Ktor installDist)
+CMD ["bin/email"]

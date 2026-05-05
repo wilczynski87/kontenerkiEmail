@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.ktor)
+//    alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
     application
 }
@@ -9,7 +9,7 @@ group = "com.kontenery"
 version = "0.0.1"
 
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass.set("io.ktor.server.netty.EngineMain")
 }
 
 kotlin {
@@ -37,8 +37,7 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(files("libs/library-1.0.0.jar"))
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-datetime
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+    implementation(libs.kotlinx.datetime)
     implementation(libs.google.api.services.gmail)
     implementation(libs.google.oauth.client)
 }

@@ -57,7 +57,7 @@ fun Application.configureRouting(mailQueue: Channel<Invoice>) {
                 )
 
                 Transport.send(email)
-                log.info("mail wysłany")
+                println("mail wysłany")
 
             } catch (e:Exception) {
                 println("testMail Exception:" )
