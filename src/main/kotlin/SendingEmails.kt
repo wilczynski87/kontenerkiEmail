@@ -66,10 +66,16 @@ fun Application.sendingMails(mailQueue: Channel<Invoice>) {
                 Transport.send(email)
 
                 log.info("mail wysłany do: $mailClient")
+                println("invoice nr: ${invoice.invoiceNumber}, to client: ${invoice.customer?.name}, to email: $mailClient")
+
                 confirmInvoiceSend(invoice.invoiceNumber ?: throw NullPointerException("No email customer, for: $invoice"))
             } catch (e: Exception) {
                 println("sendingMails EXCEPTION: $e")
-                mailSendError(invoice.toString(), e.message)
+                try {
+                    mailSendError(invoice.toString(), e.message)
+                } catch (sendError: Exception) {
+                    println("Could not notify API about error: $sendError")
+                }
             }
         }
     }

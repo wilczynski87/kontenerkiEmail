@@ -37,7 +37,7 @@ EXPOSE 8200
 
 # Environment variables
 ENV API_NAME=api
-ENV API_PORT=100
+ENV API_PORT=8100
 ENV EMAIL_PASSWORD=ehpejfervmuwjwrg
 ENV EMAIL_USER=parkingostrowskiego@gmail.com
 

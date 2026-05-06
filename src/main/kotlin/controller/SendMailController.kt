@@ -1,5 +1,6 @@
 package com.kontenery.controller
 
+import com.kontenery.env
 import com.kontenery.library.model.invoice.Invoice
 import io.ktor.http.*
 import io.ktor.server.application.call
@@ -26,7 +27,7 @@ fun Route.sendInvoice(mailQueue: Channel<Invoice>) {
                 // respond about sending
                 call.respond(LocalDate.now().toString())
             } catch (e:Exception) {
-                println("EXCEPTION in sendMailWithAttachment WITH VAT:")
+                println("EXCEPTION in sendInvoiceAgain:")
                 println(e)
                 call.respond(HttpStatusCode.BadRequest)
             }
@@ -55,7 +56,8 @@ fun Route.sendInvoice(mailQueue: Channel<Invoice>) {
             try {
                 // recive data to send invoice
                 val invoice:Invoice = call.receive<Invoice>()
-                println("invoice: $invoice")
+//                println("invoice: $invoice")
+
                 // send invoice to queue
                 mailQueue.send(invoice)
 //                println("invoice2: $invoice")
@@ -63,7 +65,7 @@ fun Route.sendInvoice(mailQueue: Channel<Invoice>) {
                 // respond about sending
                 call.respond(LocalDate.now().toString())
             } catch (e:Exception) {
-                println("EXCEPTION in sendMailWithAttachment WITH VAT:")
+                println("EXCEPTION in sendInvoiceAgain:")
                 println(e)
                 call.respond(HttpStatusCode.BadRequest)
             }
