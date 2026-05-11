@@ -9,6 +9,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    println("Środowisko: $env")
 
     val mailQueue: Channel<Invoice> = Channel(capacity = Channel.UNLIMITED)
 
