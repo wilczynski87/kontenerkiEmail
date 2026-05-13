@@ -35,13 +35,6 @@ COPY --from=build /app/build/install/email/ ./
 # Expose the port the Ktor app runs on
 EXPOSE 8200
 
-# Environment variables
-ENV API_NAME=api
-ENV API_PORT=8100
-ENV EMAIL_PASSWORD=ehpejfervmuwjwrg
-ENV EMAIL_USER=parkingostrowskiego@gmail.com
-ENV INTERNAL_API_KEY=secret123
-
 ## Run the app
 #CMD ["java", "-jar", "email.jar"]
 # start aplikacji (Ktor installDist)

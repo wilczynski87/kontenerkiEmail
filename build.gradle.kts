@@ -40,4 +40,8 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.google.api.services.gmail)
     implementation(libs.google.oauth.client)
+    implementation(libs.google.api.client)
+    implementation(libs.google.http.client.jackson2)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
 }

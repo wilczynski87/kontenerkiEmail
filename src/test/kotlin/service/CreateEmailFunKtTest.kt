@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import java.util.*
 
-class MailServiceKtTest {
+class CreateEmailFunKtTest {
 //    val emailUser = System.getenv("EMAIL_USER") ?: throw NullPointerException("There is no username for email")
 //    val emailPassword = System.getenv("EMAIL_PASSWORD") ?: throw NullPointerException("There is no password for email")
     val emailUser = "parkingostrowskiego@gmail.com"
