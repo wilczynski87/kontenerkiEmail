@@ -1,32 +1,14 @@
 package service
 
 import com.kontenery.service.createEmail
-import jakarta.mail.Authenticator
-import jakarta.mail.PasswordAuthentication
 import jakarta.mail.Session
 import jakarta.mail.internet.MimeMultipart
+import java.util.Properties
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import java.util.*
 
 class CreateEmailFunKtTest {
-//    val emailUser = System.getenv("EMAIL_USER") ?: throw NullPointerException("There is no username for email")
-//    val emailPassword = System.getenv("EMAIL_PASSWORD") ?: throw NullPointerException("There is no password for email")
-    val emailUser = "parkingostrowskiego@gmail.com"
-    val emailPassword = "ehpejfervmuwjwrg"
-
-    val props = Properties().apply {
-        put("mail.smtp.auth", "true")
-        put("mail.smtp.starttls.enable", "true")
-        put("mail.smtp.host", "smtp.gmail.com")
-        put("mail.smtp.port", "587")
-    }
-
-    private val testSession = Session.getInstance(props, object : Authenticator() {
-        override fun getPasswordAuthentication(): PasswordAuthentication {
-            return PasswordAuthentication(emailUser, emailPassword)
-        }
-    })
+    private val testSession = Session.getInstance(Properties())
 
     @Test
     fun `should create email with subject and content`() {
@@ -40,7 +22,6 @@ class CreateEmailFunKtTest {
 
         assertEquals("Test Subject", msg.subject)
         assertEquals("sender@example.com", msg.from[0].toString())
-//        assertEquals("recipient@example.com", msg.getRecipients(javax.mail.Message.RecipientType.TO)[0].toString())
     }
 
     @Test
@@ -58,8 +39,6 @@ class CreateEmailFunKtTest {
 
         val content = msg.content
         require(content is MimeMultipart)
-
-        // Expecting 2 parts: HTML + PDF
         assertEquals(2, content.count)
     }
 }

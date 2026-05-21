@@ -8,7 +8,8 @@ data class ConfigApp(
     val apiName: String,
     val apiPort: String,
     val apiToken: String,
-    val emailUser: String
+    val emailUser: String,
+    val printRecipient: String,
 ) {
     companion object {
         fun load(): ConfigApp =
@@ -21,6 +22,7 @@ data class ConfigApp(
                 apiPort = System.getenv("API_PORT") ?: error("There is no api port"),
                 apiToken = System.getenv("INTERNAL_API_KEY") ?: error("There is no token"),
                 emailUser = System.getenv("EMAIL_USER") ?: error("There is no email user"),
+                printRecipient = System.getenv("PRINT_RECIPIENT") ?: "wilczynski87@gmail.com",
             )
     }
     fun ConfigApp.withRefreshToken(newToken: String) =

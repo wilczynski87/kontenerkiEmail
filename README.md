@@ -1,43 +1,44 @@
-# email
+# kontenerkiEmail
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
+Serwis Ktor do wysyłki faktur i rachunków e-mailem (Gmail API) dla systemu magazynków kontenerowych.
 
-Here are some useful links to get you started:
+## Wymagania
 
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+- JDK 21
+- Plik `libs/library-1.0.0.jar` — wspólna biblioteka modeli (`Invoice`, `Path`, itd.). Umieść JAR w katalogu `libs/` przed buildem.
 
-## Features
+## Zmienne środowiskowe
 
-Here's a list of features included in this project:
+| Zmienna | Opis |
+|---------|------|
+| `ENV` | `DEV` lub `PROD` — w DEV maile do klientów trafiają na adres testowy |
+| `EMAIL_USER` | Adres nadawcy (konto Gmail) |
+| `GOOGLE_CLIENT_ID` | OAuth2 client ID |
+| `GOOGLE_CLIENT_SECRET` | OAuth2 client secret |
+| `GOOGLE_REFRESH_TOKEN` | Refresh token Gmail |
+| `API_NAME` | Host wewnętrznego API |
+| `API_PORT` | Port wewnętrznego API |
+| `INTERNAL_API_KEY` | Klucz `X-Internal-Key` do API |
+| `PRINT_RECIPIENT` | Odbiorca maili „fakturki do druku” (domyślnie `wilczynski87@gmail.com`) |
+| `EMAIL_PORT` | Port serwera (domyślnie `8200`) |
 
-| Name                                                                   | Description                                                                        |
-| ------------------------------------------------------------------------|------------------------------------------------------------------------------------ |
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
-| [Thymeleaf](https://start.ktor.io/p/thymeleaf)                         | Serves HTML content, templated using Thymeleaf                                     |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-| [Request Validation](https://start.ktor.io/p/request-validation)       | Adds validation for incoming requests                                              |
+## Endpointy
 
-## Building & Running
+- `GET /healthcheck` — status
+- `POST /sendMailWithAttachment/withVat` — faktura z VAT (kolejka)
+- `POST /sendMailWithAttachment/noVat` — rachunek bez VAT (kolejka)
+- `POST /sendMailWithAttachment/sendInvoiceAgain` — ponowna wysyłka
+- `POST /printInvoices` — zbiorczy PDF do druku (Gmail API)
 
-To build or run the project, use one of the following tasks:
+## Uruchomienie
 
-| Task                          | Description                                                          |
-| -------------------------------|---------------------------------------------------------------------- |
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
-
-If the server starts successfully, you'll see the following output:
-
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
+```bash
+./gradlew run
 ```
 
+```bash
+./gradlew test
+./gradlew build
+```
+
+Docker: obraz na porcie **8200**, start `bin/email`.

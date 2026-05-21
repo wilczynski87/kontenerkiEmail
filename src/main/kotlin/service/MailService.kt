@@ -1,8 +1,11 @@
 package com.kontenery.service
 
 import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.library.utils.Path
+import com.kontenery.library.utils.now
 import com.kontenery.model.ConfigApp
 import com.kontenery.model.EnvEnum
+import kotlinx.datetime.LocalDate
 
 class MailService(
     private val gmail: GmailRestService,
@@ -35,6 +38,32 @@ class MailService(
 
     suspend fun reportError(invoice: Invoice, e: Exception) {
         sendRequest.mailSendError(invoice.toString(), e.message)
+    }
+
+    suspend fun sendPrintInvoices(invoices: List<Invoice>) {
+        require(invoices.isNotEmpty()) { "Invoice list is empty" }
+
+        val invoiceHtmls = invoices
+            .map { mapInvoiceToVariablesMapForInvoiceTemplate(it) }
+            .map { renderTemplateToHtml(TemplateEngine.engine, it, Path.PERIODIC_INVOICE_PDF.path) }
+        val pdf = generatePdfToPrint(invoiceHtmls)
+
+        val invoiceDate = invoices.first().invoiceDate ?: LocalDate.now()
+        val mailContent = renderTemplateToHtml(
+            TemplateEngine.engine,
+            mapVariablesForPrintInvoices(invoiceDate),
+            Path.PRINT_MAIL.path,
+        )
+
+        val message = createEmailWithAttachment(
+            from = config.emailUser,
+            to = config.printRecipient,
+            subject = "Fakturki do druku",
+            htmlContent = mailContent,
+            pdfAttachment = pdf,
+        )
+
+        retryWithBackoff { gmail.send(message) }
     }
 
     private fun resolveRecipient(invoice: Invoice): String {

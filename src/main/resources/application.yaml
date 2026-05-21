@@ -4,7 +4,3 @@ ktor:
             - com.kontenery.ApplicationKt.module
     deployment:
         port: "$EMAIL_PORT:8200"
-
-#email:
-#    user: "parkingostrowskiego@gmail.com"
-#    password: "litcviutipqwkxsw"

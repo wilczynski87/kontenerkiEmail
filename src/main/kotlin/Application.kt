@@ -39,6 +39,6 @@ fun Application.module() {
     val mailQueue: Channel<Invoice> = Channel(capacity = Channel.UNLIMITED)
 
     configureSerialization()
-    configureRouting(mailQueue, configApp)
+    configureRouting(mailQueue, mailService)
     sendingMails(mailQueue, mailService)
 }
