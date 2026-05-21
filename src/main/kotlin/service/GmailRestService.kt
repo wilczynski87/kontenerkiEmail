@@ -1,7 +1,7 @@
 package com.kontenery.service
 
 import com.google.api.services.gmail.model.Message
-import com.kontenery.model.GoogleTokenProvider
+import com.kontenery.oauth.AutoRefreshTokenProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -13,7 +13,7 @@ import kotlin.collections.mapOf
 
 class GmailRestService(
     private val httpClient: HttpClient,
-    private val tokenProvider: GoogleTokenProvider
+    private val tokenProvider: AutoRefreshTokenProvider
 ) {
     suspend fun send(message: Message) {
         val token = tokenProvider.getAccessToken()

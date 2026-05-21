@@ -2,15 +2,16 @@ package com.kontenery
 
 import com.kontenery.library.model.invoice.Invoice
 import com.kontenery.model.ConfigApp
-import com.kontenery.model.GoogleTokenProvider
+import com.kontenery.oauth.createAutoRefreshTokenProvider
 import com.kontenery.service.DocumentService
 import com.kontenery.service.GmailRestService
 import com.kontenery.service.MailService
 import com.kontenery.service.SendRequest
-import io.ktor.client.HttpClient
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 
 fun main(args: Array<String>) {
@@ -25,7 +26,14 @@ fun Application.module() {
     val gmailClient = createHttpClient()
     val oauthClient = createHttpClient()
 
-    val tokenProvider = GoogleTokenProvider(oauthClient, configApp)
+    val tokenProvider = createAutoRefreshTokenProvider(configApp, oauthClient)
+    val tokenRefreshScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    tokenProvider.startBackgroundRefresh(tokenRefreshScope)
+
+    environment.monitor.subscribe(ApplicationStopped) {
+        tokenRefreshScope.cancel()
+    }
+
     val gmailService = GmailRestService(gmailClient, tokenProvider)
     val documentService = DocumentService()
     val sendRequest = SendRequest(internalClient, configApp)

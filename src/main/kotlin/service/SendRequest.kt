@@ -4,28 +4,29 @@ import com.kontenery.model.ConfigApp
 import com.kontenery.model.MailSendParam
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.server.application.Application
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import java.time.LocalDate
 
 class SendRequest(private val httpClient: HttpClient, configApp: ConfigApp) {
-    val baseUrl = "http://${configApp.apiName}:${configApp.apiPort}"
-    val token = configApp.apiToken
+    private val baseUrl = "http://${configApp.apiName}:${configApp.apiPort}"
+    private val token = configApp.apiToken
 
-    suspend fun confirmInvoiceSend(invoiceNumber:String) {
-        val url = "$baseUrl/mailSend/invoice"
-        println("url: $url")
-        val send = httpClient.get(url) {
+    suspend fun confirmInvoiceSend(invoiceNumber: String) {
+        val response = httpClient.get("$baseUrl/mailSend/invoice") {
             header("X-Internal-Key", token)
             url {
                 parameters.append("invoiceNumber", invoiceNumber)
                 parameters.append("sendDate", LocalDate.now().toString())
             }
         }
-        println(send)
+        if (!response.status.isSuccess()) {
+            logApiFailure("confirmInvoiceSend", invoiceNumber, response)
+        }
     }
 
-    suspend fun mailSendError(invoiceNumber:String, message: String? = null) {
-        httpClient.get("$baseUrl/mailSend") {
+    suspend fun mailSendError(invoiceNumber: String, message: String? = null) {
+        val response = httpClient.get("$baseUrl/mailSend") {
             header("X-Internal-Key", token)
             url {
                 parameters.append(MailSendParam.INVOICE_NUMBER.param, invoiceNumber)
@@ -36,6 +37,13 @@ class SendRequest(private val httpClient: HttpClient, configApp: ConfigApp) {
                 }
             }
         }
+        if (!response.status.isSuccess()) {
+            logApiFailure("mailSendError", invoiceNumber, response)
+        }
     }
 
+    private suspend fun logApiFailure(action: String, invoiceNumber: String, response: HttpResponse) {
+        val body = runCatching { response.bodyAsText() }.getOrDefault("")
+        println("API $action failed for $invoiceNumber: ${response.status} $body")
+    }
 }

@@ -37,7 +37,12 @@ class MailService(
     }
 
     suspend fun reportError(invoice: Invoice, e: Exception) {
-        sendRequest.mailSendError(invoice.toString(), e.message)
+        val invoiceNumber = invoice.invoiceNumber
+            ?: run {
+                println("Cannot report mail error: invoice has no number")
+                return
+            }
+        sendRequest.mailSendError(invoiceNumber, e.message)
     }
 
     suspend fun sendPrintInvoices(invoices: List<Invoice>) {

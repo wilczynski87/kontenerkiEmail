@@ -5,6 +5,8 @@ build/
 !**/src/test/**/build/
 *.env
 local.properties
+data/google-refresh.token
+data/*.tmp
 
 ### STS ###
 .apt_generated
