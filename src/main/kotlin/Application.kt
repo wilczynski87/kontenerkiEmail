@@ -1,6 +1,6 @@
 package com.kontenery
 
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import com.kontenery.model.ConfigApp
 import com.kontenery.oauth.createAutoRefreshTokenProvider
 import com.kontenery.service.DocumentService

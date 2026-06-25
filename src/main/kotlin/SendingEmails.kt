@@ -1,6 +1,6 @@
 package com.kontenery
 
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import com.kontenery.service.MailService
 import io.ktor.server.application.*
 import kotlinx.coroutines.CoroutineScope

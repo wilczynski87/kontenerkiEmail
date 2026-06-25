@@ -1,6 +1,6 @@
 package com.kontenery.service
 
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import com.kontenery.library.utils.Month
 import com.kontenery.library.utils.now
 import kotlinx.datetime.LocalDate

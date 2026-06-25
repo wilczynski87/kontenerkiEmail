@@ -1,6 +1,6 @@
 package com.kontenery.service
 
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import com.kontenery.library.utils.Path
 import com.kontenery.library.utils.now
 import com.kontenery.model.ConfigApp

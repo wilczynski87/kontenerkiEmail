@@ -2,7 +2,7 @@ package com.kontenery
 
 import com.kontenery.controller.printInvoice
 import com.kontenery.controller.sendInvoice
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import com.kontenery.service.MailService
 import io.ktor.server.application.*
 import io.ktor.server.response.*

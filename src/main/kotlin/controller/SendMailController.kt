@@ -1,6 +1,6 @@
 package com.kontenery.controller
 
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import io.ktor.http.*
 import io.ktor.server.application.call
 import io.ktor.server.request.*
@@ -17,7 +17,7 @@ fun Route.sendInvoice(mailQueue: Channel<Invoice>) {
             println("sendMailWithAttachment WITH VAT")
             try {
                 // recive data to send invoice
-                val invoice:Invoice = call.receive<Invoice>()
+                val invoice: Invoice = call.receive<Invoice>()
                 println("invoice: $invoice")
                 // send invoice to queue
                 mailQueue.send(invoice)

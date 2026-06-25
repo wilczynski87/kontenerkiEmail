@@ -1,6 +1,6 @@
 package com.kontenery.service
 
-import com.kontenery.library.model.invoice.Invoice
+import com.kontenery.data.invoice.Invoice
 import com.kontenery.model.Path
 
 class DocumentService {
