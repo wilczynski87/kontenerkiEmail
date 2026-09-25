@@ -1,6 +1,5 @@
 package com.kontenery.service
 
-import com.kontenery.model.Path
 import com.lowagie.text.pdf.BaseFont
 import org.xhtmlrenderer.pdf.ITextRenderer
 import java.io.ByteArrayOutputStream

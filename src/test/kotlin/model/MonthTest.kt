@@ -3,8 +3,8 @@ package model
 import com.kontenery.library.utils.Month
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class MonthTest {
 

@@ -1,22 +1,22 @@
 package com.kontenery.service
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
+import com.google.api.services.gmail.model.Message
 import jakarta.activation.DataHandler
+import jakarta.mail.Message.RecipientType
+import jakarta.mail.Session
 import jakarta.mail.internet.InternetAddress
 import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.internet.MimeMessage
 import jakarta.mail.internet.MimeMultipart
 import jakarta.mail.util.ByteArrayDataSource
+import kotlinx.coroutines.delay
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.Base64
 import java.util.Properties
-import com.google.api.services.gmail.model.Message
-import jakarta.mail.Message.RecipientType
-import jakarta.mail.Session
-import kotlinx.coroutines.delay
 import kotlin.math.min
 import kotlin.random.Random
-import java.io.IOException
-import com.google.api.client.googleapis.json.GoogleJsonResponseException
 
 fun createEmail(
     session: Session,

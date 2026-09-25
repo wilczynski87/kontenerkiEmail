@@ -8,7 +8,9 @@ import com.kontenery.service.GmailHealthService
 import com.kontenery.service.GmailRestService
 import com.kontenery.service.MailService
 import com.kontenery.service.SendRequest
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.server.application.ApplicationStopped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

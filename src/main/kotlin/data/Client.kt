@@ -2,9 +2,9 @@ package com.kontenery.data
 
 import com.kontenery.data.serializers.BigDecimalSerializer
 import com.kontenery.data.serializers.LocalDateSerializer
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
-import kotlinx.datetime.LocalDate
 
 @Serializable
 data class Client(

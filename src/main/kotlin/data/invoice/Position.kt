@@ -1,8 +1,6 @@
 package com.kontenery.data.invoice
 
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 @Serializable
 data class Position(

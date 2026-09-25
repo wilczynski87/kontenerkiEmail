@@ -1,9 +1,9 @@
 package oauth
 
 import com.kontenery.oauth.FileRefreshTokenStore
+import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import java.nio.file.Files
 
 class FileRefreshTokenStoreTest {
 
