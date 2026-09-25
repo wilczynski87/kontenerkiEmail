@@ -19,6 +19,7 @@ class GmailHealthService(
             gmailApiOk = false,
             sendCapabilityOk = false,
             emailAddress = null,
+            scopes = emptyList(),
             clientIdSuffix = clientIdSuffix(config.clientId),
             message = "Gmail health not checked yet",
         )
@@ -27,51 +28,102 @@ class GmailHealthService(
     fun lastStatus(): GmailHealthResult = lastResult.get()
 
     /**
-     * Live check: refresh OAuth token (validates client id/secret + refresh token),
-     * then call Gmail profile API (validates connectivity + Gmail access / send capability).
+     * Live check:
+     * 1) refresh OAuth (validates client id/secret + refresh token)
+     * 2) tokeninfo (validates token + checks gmail.send / mail.google.com scopes)
+     *
+     * Does not call users/me/profile — that requires broader scopes than gmail.send.
      */
     suspend fun checkNow(): GmailHealthResult {
         val checkedAt = Instant.now().toString()
+        val clientSuffix = clientIdSuffix(config.clientId)
 
-        return try {
-            val accessToken = tokenProvider.forceRefreshAccessToken()
-            val profile = gmail.fetchProfile(accessToken)
-            val email = profile.emailAddress
+        val accessToken = try {
+            tokenProvider.forceRefreshAccessToken()
+        } catch (e: Exception) {
+            return store(
+                GmailHealthResult(
+                    status = GmailHealthStatus.DOWN,
+                    checkedAt = checkedAt,
+                    oauthOk = false,
+                    gmailApiOk = false,
+                    sendCapabilityOk = false,
+                    emailAddress = null,
+                    scopes = emptyList(),
+                    clientIdSuffix = clientSuffix,
+                    message = e.message ?: e.toString(),
+                )
+            )
+        }
 
-            val emailMatchesConfig = email == null ||
-                email.equals(config.emailUser, ignoreCase = true)
+        val tokenInfo = try {
+            gmail.fetchTokenInfo(accessToken)
+        } catch (e: Exception) {
+            return store(
+                GmailHealthResult(
+                    status = GmailHealthStatus.DOWN,
+                    checkedAt = checkedAt,
+                    oauthOk = true,
+                    gmailApiOk = false,
+                    sendCapabilityOk = false,
+                    emailAddress = null,
+                    scopes = emptyList(),
+                    clientIdSuffix = clientSuffix,
+                    message = "OAuth refresh OK, but tokeninfo failed: ${e.message}",
+                )
+            )
+        }
 
-            val result = GmailHealthResult(
-                status = if (emailMatchesConfig) GmailHealthStatus.UP else GmailHealthStatus.DEGRADED,
+        val scopes = tokenInfo.scopes().toList().sorted()
+        val canSend = tokenInfo.hasGmailSendCapability()
+        val email = tokenInfo.email ?: config.emailUser
+        val audienceMatches = tokenInfo.audience.isNullOrBlank() ||
+            tokenInfo.audience == config.clientId ||
+            tokenInfo.authorizedParty == config.clientId
+
+        val result = when {
+            !canSend -> GmailHealthResult(
+                status = GmailHealthStatus.DOWN,
+                checkedAt = checkedAt,
+                oauthOk = true,
+                gmailApiOk = true,
+                sendCapabilityOk = false,
+                emailAddress = email,
+                scopes = scopes,
+                clientIdSuffix = clientSuffix,
+                message = "OAuth OK, but token lacks gmail.send scope. Re-authorize with " +
+                    "https://www.googleapis.com/auth/gmail.send (current: ${scopes.joinToString()})",
+            )
+            !audienceMatches -> GmailHealthResult(
+                status = GmailHealthStatus.DEGRADED,
                 checkedAt = checkedAt,
                 oauthOk = true,
                 gmailApiOk = true,
                 sendCapabilityOk = true,
                 emailAddress = email,
-                clientIdSuffix = clientIdSuffix(config.clientId),
-                message = when {
-                    !emailMatchesConfig ->
-                        "OAuth OK, but Gmail account ($email) differs from EMAIL_USER (${config.emailUser})"
-                    else ->
-                        "OAuth credentials valid; Gmail API reachable for $email"
-                },
+                scopes = scopes,
+                clientIdSuffix = clientSuffix,
+                message = "Token audience (${tokenInfo.audience}) differs from GOOGLE_CLIENT_ID",
             )
-            lastResult.set(result)
-            result
-        } catch (e: Exception) {
-            val result = GmailHealthResult(
-                status = GmailHealthStatus.DOWN,
+            else -> GmailHealthResult(
+                status = GmailHealthStatus.UP,
                 checkedAt = checkedAt,
-                oauthOk = false,
-                gmailApiOk = false,
-                sendCapabilityOk = false,
-                emailAddress = null,
-                clientIdSuffix = clientIdSuffix(config.clientId),
-                message = e.message ?: e.toString(),
+                oauthOk = true,
+                gmailApiOk = true,
+                sendCapabilityOk = true,
+                emailAddress = email,
+                scopes = scopes,
+                clientIdSuffix = clientSuffix,
+                message = "OAuth credentials valid; Gmail send scope OK for $email",
             )
-            lastResult.set(result)
-            result
         }
+
+        return store(result)
+    }
+
+    private fun store(result: GmailHealthResult): GmailHealthResult {
+        lastResult.set(result)
+        return result
     }
 
     companion object {
@@ -98,6 +150,7 @@ data class GmailHealthResult(
     val gmailApiOk: Boolean,
     val sendCapabilityOk: Boolean,
     val emailAddress: String?,
+    val scopes: List<String> = emptyList(),
     val clientIdSuffix: String,
     val message: String,
 )
