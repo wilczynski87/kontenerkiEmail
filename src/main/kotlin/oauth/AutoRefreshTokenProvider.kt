@@ -30,6 +30,13 @@ class AutoRefreshTokenProvider(
         return refreshAndCache()
     }
 
+    /** Forces a live token refresh against Google (validates client id/secret + refresh token). */
+    suspend fun forceRefreshAccessToken(): String = mutex.withLock {
+        cachedAccessToken = null
+        expiryMs = 0
+        refreshAndCacheUnlocked()
+    }
+
     fun startBackgroundRefresh(scope: CoroutineScope) {
         scope.launch {
             while (isActive) {
@@ -46,14 +53,18 @@ class AutoRefreshTokenProvider(
         cachedAccessToken?.let { token ->
             if (now < expiryMs) return token
         }
+        refreshAndCacheUnlocked()
+    }
 
+    private suspend fun refreshAndCacheUnlocked(): String {
+        val now = System.currentTimeMillis()
         val refreshed = refresher.refresh(tokenStore.getRefreshToken())
         refreshed.refreshToken?.let { tokenStore.saveRefreshToken(it) }
 
         cachedAccessToken = refreshed.accessToken
         expiryMs = now + refreshed.expiresInSeconds * 1000L - EXPIRY_BUFFER_MS
 
-        refreshed.accessToken
+        return refreshed.accessToken
     }
 
     private fun timeUntilRefresh(): Long {

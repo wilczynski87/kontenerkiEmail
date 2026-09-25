@@ -25,11 +25,14 @@ Serwis Ktor do wysyłki faktur i rachunków e-mailem (Gmail API) dla systemu mag
 
 ## Endpointy
 
-- `GET /healthcheck` — status
+- `GET /healthcheck` — status aplikacji + ostatni wynik sprawdzenia Gmail (bez live call do Google)
+- `GET /healthcheck/gmail` — **live** probe: odświeża OAuth (sprawdza client id/secret + refresh token) i woła Gmail API profile
 - `POST /sendMailWithAttachment/withVat` — faktura z VAT (kolejka)
 - `POST /sendMailWithAttachment/noVat` — rachunek bez VAT (kolejka)
 - `POST /sendMailWithAttachment/sendInvoiceAgain` — ponowna wysyłka
 - `POST /printInvoices` — zbiorczy PDF do druku (Gmail API)
+
+Po starcie serwis automatycznie uruchamia ten sam live probe co `/healthcheck/gmail` i loguje wynik.
 
 ## Uruchomienie
 
